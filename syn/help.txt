@@ -1,0 +1,22 @@
+container	name			interface name
+e8f2905d2e28  user2-13.10.0.4
+761f00b6f77a  victim-13.10.0.2
+9e824c9f038d  user1-13.10.0.3
+b2c1ccb28216  seed-attacker		br-0ce8beee87eb
+
+
+### For docker errors run docker system prune
+
+1. run ifconfig in attacker container to get the interface id
+2. sysctl -w net.ipv4.tcp_syncookies=0   in victim shell to turn it off (1 to turn on)
+3. netstat -tna    to record current queue status
+
+4. sysctl -w net.ipv4.tcp_max_syn_backlog=50    in victim shell to limit queue size 
+5. fill iface number in the python file
+
+
+6. run the python file in attacker and wait 2-3 minutes
+7. go to user 1 terminal and try to telnet to the victim
+
+8. you can also use netstat -tna in victim to see connections
+

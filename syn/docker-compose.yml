@@ -1,0 +1,75 @@
+version: "3"
+
+services:
+    attacker:
+        image: handsonsecurity/seed-ubuntu:large
+        container_name: seed-attacker
+        hostname: 'attacker - DJ'
+        tty: true
+        cap_add:
+                - ALL
+        privileged: true
+        volumes:
+                - ./volumes:/volumes
+        network_mode: host
+
+
+    Victim:
+        image: handsonsecurity/seed-ubuntu:large
+        container_name: victim-13.10.0.2
+        hostname: 'victim:13.10.0.2 - SD'
+        tty: true
+        cap_add:
+                - ALL
+        privileged: true
+        sysctls:
+                - net.ipv4.tcp_syncookies=0
+
+        networks:
+            net-13.10.0.0:
+                ipv4_address: 13.10.0.2
+
+        command: bash -c "
+                      /etc/init.d/openbsd-inetd start  &&
+                      tail -f /dev/null
+                 "
+                  
+    User1:
+        image: handsonsecurity/seed-ubuntu:large
+        container_name: user1-13.10.0.3
+        hostname: 'user1:13.10.0.3 - HG'
+        tty: true
+        cap_add:
+                - ALL
+        networks:
+            net-13.10.0.0:
+                ipv4_address: 13.10.0.3
+
+        command: bash -c "
+                      /etc/init.d/openbsd-inetd start  &&
+                      tail -f /dev/null
+                 "
+
+    User2:
+        image: handsonsecurity/seed-ubuntu:large
+        container_name: user2-13.10.0.4
+        hostname: 'user2:13.10.0.4 - Other'
+        tty: true
+        cap_add:
+                - ALL
+        networks:
+            net-13.10.0.0:
+                ipv4_address: 13.10.0.4
+
+        command: bash -c "
+                      /etc/init.d/openbsd-inetd start  &&
+                      tail -f /dev/null
+                 "
+
+networks:
+    net-13.10.0.0:
+        name: net-13.10.0.0
+        ipam:
+            config:
+                - subnet: 13.10.0.0/24
+
